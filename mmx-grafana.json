@@ -379,9 +379,7 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": {
-              "mode": "thresholds"
-            }
+            "mode": "thresholds"
           },
           "decimals": 0,
           "mappings": [],
