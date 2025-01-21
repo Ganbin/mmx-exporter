@@ -36,11 +36,8 @@ MMX_FARM_BLOCKS_COUNT = Gauge('mmx_farm_blocks_count', 'Number of blocks found i
 MMX_FARM_BLOCKS_LAST_HEIGHT = Gauge('mmx_farm_blocks_last_height', 'Last height of found block')
 MMX_FARM_BLOCKS_TOTAL_REWARDS = Gauge('mmx_farm_blocks_total_rewards', 'Total rewards value for found blocks')
 
-# Wallet metrics
-MMX_WALLET_BALANCE_TOTAL = Gauge('mmx_wallet_balance_total', 'Total wallet balance')
-MMX_WALLET_BALANCE_SPENDABLE = Gauge('mmx_wallet_balance_spendable', 'Spendable wallet balance')
-MMX_WALLET_BALANCE_LOCKED = Gauge('mmx_wallet_balance_locked', 'Locked wallet balance')
-MMX_WALLET_BALANCE_RESERVED = Gauge('mmx_wallet_balance_reserved', 'Reserved wallet balance')
+# Wallet metrics (modified to include address label)
+MMX_WALLET_BALANCE = Gauge('mmx_wallet_balance', 'Wallet balance', ['account', 'address', 'type'])
 
 # MMX node RPC configuration
 MMX_RPC_URL = "http://localhost:11380"  # Adjust this to your MMX node RPC endpoint
@@ -111,22 +108,46 @@ def get_farm_block_summary():
     except Exception as e:
         logging.error(f"Error collecting farm blocks summary metrics: {e}")
 
-def get_wallet_balance():
+def get_wallet_accounts():
+    """Get list of wallet accounts"""
     try:
         headers = {'x-api-token': API_TOKEN}
-        response = requests.get(f"{MMX_RPC_URL}/wapi/wallet/balance", params={'index': 0}, headers=headers)
-        logging.debug(f"Wallet balance response: {response.text}")
-        data = response.json()
+        response = requests.get(f"{MMX_RPC_URL}/wapi/wallet/accounts", headers=headers)
+        logging.debug(f"Wallet accounts response: {response.text}")
+        return response.json()
+    except Exception as e:
+        logging.error(f"Error fetching wallet accounts: {e}")
+        return []
+
+def get_wallet_balance():
+    try:
+        # Get all wallet accounts
+        headers = {'x-api-token': API_TOKEN}
+        accounts = get_wallet_accounts()
         
-        # Find the MMX balance (native token)
-        for balance in data['balances']:
-            if balance['is_native']:
-                MMX_WALLET_BALANCE_TOTAL.set(balance['total'])
-                MMX_WALLET_BALANCE_SPENDABLE.set(balance['spendable'])
-                MMX_WALLET_BALANCE_LOCKED.set(balance['locked'])
-                MMX_WALLET_BALANCE_RESERVED.set(balance['reserved'])
-                break
-                
+        # Process each account
+        for account_info in accounts:
+            account = str(account_info['account'])
+            address = account_info['address']
+            
+            # Get balance for this account
+            response = requests.get(
+                f"{MMX_RPC_URL}/wapi/wallet/balance",
+                params={'index': account},
+                headers=headers
+            )
+            logging.debug(f"Wallet balance response for account {account}: {response.text}")
+            data = response.json()
+            
+            # Find the MMX balance (native token)
+            for balance in data['balances']:
+                if balance['is_native']:
+                    MMX_WALLET_BALANCE.labels(account=account, address=address, type='total').set(balance['total'])
+                    MMX_WALLET_BALANCE.labels(account=account, address=address, type='spendable').set(balance['spendable'])
+                    MMX_WALLET_BALANCE.labels(account=account, address=address, type='locked').set(balance['locked'])
+                    MMX_WALLET_BALANCE.labels(account=account, address=address, type='reserved').set(balance['reserved'])
+                    break
+                    
     except Exception as e:
         logging.error(f"Error collecting wallet balance metrics: {e}")
 

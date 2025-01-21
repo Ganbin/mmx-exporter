@@ -492,7 +492,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "adhg5u3k6sum8c"
       },
       "fieldConfig": {
         "defaults": {
@@ -538,7 +538,13 @@
       "pluginVersion": "10.4.1",
       "targets": [
         {
-          "expr": "mmx_wallet_balance_total",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "adhg5u3k6sum8c"
+          },
+          "editorMode": "code",
+          "expr": "mmx_wallet_balance{type=\"total\"}",
+          "range": true,
           "refId": "A"
         }
       ],
@@ -548,7 +554,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "adhg5u3k6sum8c"
       },
       "fieldConfig": {
         "defaults": {
@@ -594,7 +600,13 @@
       "pluginVersion": "10.4.1",
       "targets": [
         {
-          "expr": "mmx_wallet_balance_spendable",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "adhg5u3k6sum8c"
+          },
+          "editorMode": "code",
+          "expr": "mmx_wallet_balance{type=\"spendable\"}",
+          "range": true,
           "refId": "A"
         }
       ],
@@ -604,7 +616,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "adhg5u3k6sum8c"
       },
       "fieldConfig": {
         "defaults": {
@@ -656,10 +668,41 @@
           },
           "unit": "none"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Spendable"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Locked"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
-        "h": 6,
+        "h": 11,
         "w": 6,
         "x": 18,
         "y": 7
@@ -667,7 +710,7 @@
       "id": 13,
       "options": {
         "legend": {
-          "calcs": ["lastNotNull", "mean"],
+          "calcs": ["lastNotNull"],
           "displayMode": "table",
           "placement": "bottom",
           "showLegend": true
@@ -679,23 +722,47 @@
       },
       "targets": [
         {
-          "expr": "mmx_wallet_balance_total",
-          "legendFormat": "Total",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "adhg5u3k6sum8c"
+          },
+          "editorMode": "code",
+          "expr": "mmx_wallet_balance{type=\"total\"}",
+          "legendFormat": "{{account}} Total",
+          "range": true,
           "refId": "A"
         },
         {
-          "expr": "mmx_wallet_balance_spendable",
-          "legendFormat": "Spendable",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "adhg5u3k6sum8c"
+          },
+          "editorMode": "code",
+          "expr": "mmx_wallet_balance{type=\"spendable\"}",
+          "legendFormat": "{{account}} Spendable",
+          "range": true,
           "refId": "B"
         },
         {
-          "expr": "mmx_wallet_balance_locked",
-          "legendFormat": "Locked",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "adhg5u3k6sum8c"
+          },
+          "editorMode": "code",
+          "expr": "mmx_wallet_balance{type=\"locked\"}",
+          "legendFormat": "{{account}} Locked",
+          "range": true,
           "refId": "C"
         },
         {
-          "expr": "mmx_wallet_balance_reserved",
-          "legendFormat": "Reserved",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "adhg5u3k6sum8c"
+          },
+          "editorMode": "code",
+          "expr": "mmx_wallet_balance{type=\"reserved\"}",
+          "legendFormat": "{{account}} Reserved",
+          "range": true,
           "refId": "D"
         }
       ],
@@ -1464,13 +1531,13 @@
     "list": []
   },
   "time": {
-    "from": "now-24h",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "MMX Node Dashboard",
   "uid": "aeakfy6pjpc00e",
-  "version": 22,
+  "version": 25,
   "weekStart": ""
 }
