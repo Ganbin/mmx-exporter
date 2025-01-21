@@ -29,6 +29,7 @@ MMX_BLOCK_REWARD = Gauge('mmx_block_reward', 'Current block reward')
 MMX_SPACE_DIFFICULTY = Gauge('mmx_space_difficulty', 'Current space difficulty')
 MMX_AVERAGE_TXFEE = Gauge('mmx_average_txfee', 'Average transaction fee')
 MMX_BLOCK_SIZE = Gauge('mmx_block_size', 'Current block size')
+MMX_TOTAL_SPACE = Gauge('mmx_total_space', 'Total network space')
 
 # Farm block metrics
 MMX_FARM_BLOCKS_COUNT = Gauge('mmx_farm_blocks_count', 'Number of blocks found in period')
@@ -70,6 +71,7 @@ def get_network_info():
         MMX_SPACE_DIFFICULTY.set(data['space_diff'])
         MMX_AVERAGE_TXFEE.set(data['average_txfee']['value'])
         MMX_BLOCK_SIZE.set(data['block_size'])
+        MMX_TOTAL_SPACE.set(data['total_space'])
         
     except Exception as e:
         logging.error(f"Error collecting network metrics: {e}")
