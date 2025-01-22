@@ -174,7 +174,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "adhg5u3k6sum8c"
       },
       "fieldConfig": {
         "defaults": {
@@ -224,7 +224,20 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Farm block per day"
+            },
+            "properties": [
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 6,
@@ -247,14 +260,37 @@
       },
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "adhg5u3k6sum8c"
+          },
+          "editorMode": "code",
           "expr": "mmx_farm_blocks_count",
           "legendFormat": "Block Count",
+          "range": true,
           "refId": "A"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "adhg5u3k6sum8c"
+          },
           "expr": "mmx_farm_blocks_total_rewards",
           "legendFormat": "Total Rewards",
           "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "adhg5u3k6sum8c"
+          },
+          "editorMode": "code",
+          "expr": "increase(mmx_farm_blocks_count[24h])",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "Farm block per day",
+          "range": true,
+          "refId": "C"
         }
       ],
       "title": "Farm Blocks Summary",
@@ -908,6 +944,7 @@
           "color": {
             "mode": "thresholds"
           },
+          "fieldMinMax": false,
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -915,14 +952,10 @@
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
           },
-          "unit": "h"
+          "unit": "dtdhms"
         },
         "overrides": []
       },
@@ -955,7 +988,7 @@
             "uid": "adhg5u3k6sum8c"
           },
           "editorMode": "code",
-          "expr": "(10 / ((mmx_farm_size_tb * 1024) / mmx_total_space)) / 3600",
+          "expr": "(((mmx_total_space)/((mmx_farm_size_effective_tb * 1024^4)/1e9)) / 6) * 60",
           "instant": false,
           "legendFormat": "TTW",
           "range": true,
@@ -1021,7 +1054,7 @@
               }
             ]
           },
-          "unit": "h"
+          "unit": "dtdhms"
         },
         "overrides": []
       },
@@ -1051,7 +1084,7 @@
             "uid": "adhg5u3k6sum8c"
           },
           "editorMode": "code",
-          "expr": "(10 / ((mmx_farm_size_tb * 1024) / mmx_total_space)) / 3600",
+          "expr": "(((mmx_total_space)/((mmx_farm_size_effective_tb * 1024^4)/1e9)) / 6) * 60",
           "instant": false,
           "legendFormat": "TTW",
           "range": true,
@@ -1524,20 +1557,20 @@
       "type": "stat"
     }
   ],
-  "refresh": "5s",
+  "refresh": "10s",
   "schemaVersion": 39,
   "tags": ["mmx"],
   "templating": {
     "list": []
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-2d",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "MMX Node Dashboard",
   "uid": "aeakfy6pjpc00e",
-  "version": 25,
+  "version": 28,
   "weekStart": ""
 }
